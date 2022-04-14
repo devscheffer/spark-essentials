@@ -88,7 +88,13 @@ object DataSources extends App {
   carsDF.write
     .mode(SaveMode.Overwrite)
     .save("src/main/resources/data/cars.parquet")
-
+  println("="*50)
+  println("Parquet read")
+  println("="*50)
+  val parquet_test = spark.read
+    .schema(carsSchema)
+    .load("src/main/resources/data/cars.parquet")
+  parquet_test.show(3)
   // Text files
   spark.read.text("src/main/resources/data/sampleTextFile.txt").show()
 
@@ -119,16 +125,21 @@ object DataSources extends App {
   // TSV
   moviesDF.write
     .format("csv")
+    .mode(SaveMode.Overwrite)
     .option("header", "true")
     .option("sep", "\t")
     .save("src/main/resources/data/movies.csv")
 
   // Parquet
-  moviesDF.write.save("src/main/resources/data/movies.parquet")
+  moviesDF.write
+    .mode(SaveMode.Overwrite)
+    .save("src/main/resources/data/movies.parquet")
+
 
   // save to DF
   moviesDF.write
     .format("jdbc")
+    .mode(SaveMode.Overwrite)
     .option("driver", driver)
     .option("url", url)
     .option("user", user)
