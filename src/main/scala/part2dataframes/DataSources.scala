@@ -35,7 +35,7 @@ object DataSources extends App {
     .option("mode", "failFast") // dropMalformed, permissive (default)
     .option("path", "src/main/resources/data/cars.json")
     .load()
-
+  carsDF.show(2)
   // alternative reading with options map
   val carsDFWithOptionMap = spark.read
     .format("json")
@@ -53,11 +53,12 @@ object DataSources extends App {
    - path
    - zero or more options
   */
+  carsDF.show(5)
   carsDF.write
     .format("json")
     .mode(SaveMode.Overwrite)
     .save("src/main/resources/data/cars_dupe.json")
-
+/*
   // JSON flags
   spark.read
     .schema(carsSchema)
@@ -132,4 +133,6 @@ object DataSources extends App {
     .option("password", password)
     .option("dbtable", "public.movies")
     .save()
+
+ */
 }

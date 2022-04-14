@@ -4,7 +4,6 @@ import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.types._
 
 object DataFramesBasics extends App {
-
   // creating a SparkSession
   val spark = SparkSession.builder()
     .appName("DataFrames Basics")
@@ -104,4 +103,5 @@ object DataFramesBasics extends App {
     .load("src/main/resources/data/movies.json")
   moviesDF.printSchema()
   println(s"The Movies DF has ${moviesDF.count()} rows")
+  moviesDF.select("Creative_Type","Director","MPAA_Rating").show(5)
 }
