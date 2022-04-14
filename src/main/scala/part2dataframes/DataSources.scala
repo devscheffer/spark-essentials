@@ -1,13 +1,14 @@
 package part2dataframes
 
-import org.apache.spark.sql.{SaveMode, SparkSession}
 import org.apache.spark.sql.types._
+import org.apache.spark.sql.{SaveMode, SparkSession}
 
 object DataSources extends App {
 
   val spark = SparkSession.builder()
     .appName("Data Sources and Formats")
     .config("spark.master", "local")
+    .config("spark.sql.legacy.timeParserPolicy","LEGACY")
     .getOrCreate()
 
   val carsSchema = StructType(Array(
@@ -35,7 +36,7 @@ object DataSources extends App {
     .option("mode", "failFast") // dropMalformed, permissive (default)
     .option("path", "src/main/resources/data/cars.json")
     .load()
-  carsDF.show(2)
+  //  carsDF.show(2)
   // alternative reading with options map
   val carsDFWithOptionMap = spark.read
     .format("json")
@@ -53,12 +54,12 @@ object DataSources extends App {
    - path
    - zero or more options
   */
-  carsDF.show(5)
+  //  carsDF.show(5)
   carsDF.write
     .format("json")
     .mode(SaveMode.Overwrite)
     .save("src/main/resources/data/cars_dupe.json")
-/*
+
   // JSON flags
   spark.read
     .schema(carsSchema)
@@ -73,15 +74,16 @@ object DataSources extends App {
     StructField("date", DateType),
     StructField("price", DoubleType)
   ))
-
-  spark.read
+  println("Teste Stocks")
+  println("=" * 30)
+  val stocks = spark.read
     .schema(stocksSchema)
     .option("dateFormat", "MMM dd YYYY")
     .option("header", "true")
     .option("sep", ",")
     .option("nullValue", "")
     .csv("src/main/resources/data/stocks.csv")
-
+  stocks.show(10)
   // Parquet
   carsDF.write
     .mode(SaveMode.Overwrite)
@@ -134,5 +136,5 @@ object DataSources extends App {
     .option("dbtable", "public.movies")
     .save()
 
- */
+
 }
