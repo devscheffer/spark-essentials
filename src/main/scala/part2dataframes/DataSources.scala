@@ -8,7 +8,7 @@ object DataSources extends App {
   val spark = SparkSession.builder()
     .appName("Data Sources and Formats")
     .config("spark.master", "local")
-    .config("spark.sql.legacy.timeParserPolicy","LEGACY")
+    .config("spark.sql.legacy.timeParserPolicy", "LEGACY")
     .getOrCreate()
 
   val carsSchema = StructType(Array(
@@ -63,9 +63,11 @@ object DataSources extends App {
   // JSON flags
   spark.read
     .schema(carsSchema)
-    .option("dateFormat", "YYYY-MM-dd") // couple with schema; if Spark fails parsing, it will put null
-    .option("allowSingleQuotes", "true")
-    .option("compression", "uncompressed") // bzip2, gzip, lz4, snappy, deflate
+    .options(Map(
+      "dateFormat" -> "YYYY-MM-dd", // couple with schema; if Spark fails parsing, it will put null
+      "allowSingleQuotes" -> "true",
+      "compression" -> "uncompressed" // bzip2, gzip, lz4, snappy, deflate
+    ))
     .json("src/main/resources/data/cars.json")
 
   // CSV flags
@@ -78,19 +80,21 @@ object DataSources extends App {
   println("=" * 30)
   val stocks = spark.read
     .schema(stocksSchema)
-    .option("dateFormat", "MMM dd YYYY")
-    .option("header", "true")
-    .option("sep", ",")
-    .option("nullValue", "")
+    .options(Map(
+      "dateFormat" -> "MMM dd YYYY",
+      "header" -> "true",
+      "sep" -> ",",
+      "nullValue" -> ""
+    ))
     .csv("src/main/resources/data/stocks.csv")
   stocks.show(10)
   // Parquet
   carsDF.write
     .mode(SaveMode.Overwrite)
     .save("src/main/resources/data/cars.parquet")
-  println("="*50)
+  println("=" * 50)
   println("Parquet read")
-  println("="*50)
+  println("=" * 50)
   val parquet_test = spark.read
     .schema(carsSchema)
     .load("src/main/resources/data/cars.parquet")
@@ -99,18 +103,20 @@ object DataSources extends App {
   spark.read.text("src/main/resources/data/sampleTextFile.txt").show()
 
   // Reading from a remote DB
-  val driver = "org.postgresql.Driver"
-  val url = "jdbc:postgresql://localhost:5432/rtjvm"
-  val user = "docker"
-  val password = "docker"
+  val driver: String = "org.postgresql.Driver"
+  val url: String = "jdbc:postgresql://localhost:5432/rtjvm"
+  val user: String = "docker"
+  val password: String = "docker"
 
   val employeesDF = spark.read
     .format("jdbc")
-    .option("driver", driver)
-    .option("url", url)
-    .option("user", user)
-    .option("password", password)
-    .option("dbtable", "public.employees")
+    .options(Map(
+      "driver" -> driver,
+      "url" -> url,
+      "user" -> user,
+      "password" -> password,
+      "dbtable" -> "public.employees"
+    ))
     .load()
   employeesDF.show(10)
   /**
@@ -126,8 +132,10 @@ object DataSources extends App {
   moviesDF.write
     .format("csv")
     .mode(SaveMode.Overwrite)
-    .option("header", "true")
-    .option("sep", "\t")
+    .options(Map(
+      "header" -> "true",
+      "sep" -> "\t"
+    ))
     .save("src/main/resources/data/movies.csv")
 
   // Parquet
@@ -135,16 +143,17 @@ object DataSources extends App {
     .mode(SaveMode.Overwrite)
     .save("src/main/resources/data/movies.parquet")
 
-
   // save to DF
   moviesDF.write
     .format("jdbc")
     .mode(SaveMode.Ignore)
-    .option("driver", driver)
-    .option("url", url)
-    .option("user", user)
-    .option("password", password)
-    .option("dbtable", "public.movies")
+    .options(Map(
+      "driver" -> driver,
+      "url" -> url,
+      "user" -> user,
+      "password" -> password,
+      "dbtable" -> "public.movies"
+    ))
     .save()
 
 
