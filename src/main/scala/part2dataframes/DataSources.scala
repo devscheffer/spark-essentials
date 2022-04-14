@@ -112,7 +112,7 @@ object DataSources extends App {
     .option("password", password)
     .option("dbtable", "public.employees")
     .load()
-
+  employeesDF.show(10)
   /**
     * Exercise: read the movies DF, then write it as
     * - tab-separated values file
@@ -139,7 +139,7 @@ object DataSources extends App {
   // save to DF
   moviesDF.write
     .format("jdbc")
-    .mode(SaveMode.Overwrite)
+    .mode(SaveMode.Ignore)
     .option("driver", driver)
     .option("url", url)
     .option("user", user)
