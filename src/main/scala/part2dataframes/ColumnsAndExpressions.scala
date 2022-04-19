@@ -90,7 +90,9 @@ object ColumnsAndExpressions extends App {
     * Use as many versions as possible
     */
 
-  val moviesDF = spark.read.option("inferSchema", "true").json("src/main/resources/data/movies.json")
+  val moviesDF = spark.read
+    .option("inferSchema", "true")
+    .json("src/main/resources/data/movies.json")
   moviesDF.show()
 
   // 1

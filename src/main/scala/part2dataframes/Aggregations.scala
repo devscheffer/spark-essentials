@@ -13,7 +13,7 @@ object Aggregations extends App {
   val moviesDF = spark.read
     .option("inferSchema", "true")
     .json("src/main/resources/data/movies.json")
-
+  moviesDF.printSchema()
 
   // counting
   val genresCountDF = moviesDF.select(count(col("Major_Genre"))) // all the values except null
@@ -94,9 +94,9 @@ object Aggregations extends App {
 
   // 4
   moviesDF
-    .groupBy("Director")
+    .groupBy("Director","Major_Genre")
     .agg(
-      avg("IMDB_Rating").as("Avg_Rating"),
+      format_number(avg("IMDB_Rating"),2).as("Avg_Rating"),
       sum("US_Gross").as("Total_US_Gross")
     )
     .orderBy(col("Avg_Rating").desc_nulls_last)
