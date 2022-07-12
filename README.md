@@ -8,11 +8,21 @@ This repository contains the code we wrote during  [Rock the JVM's Spark Essenti
 - either clone the repo or download as zip
 - open with IntelliJ as an SBT project
 - in a terminal window, navigate to the folder where you downloaded this repo and run `docker-compose up` to build and start the PostgreSQL container - we will interact with it from Spark
-- in another terminal window, navigate to `spark-cluster/` and build the Docker-based Spark cluster with
-```
-chmod +x build-images.sh
-./build-images.sh
-```
+- in another terminal window, navigate to `spark-cluster/` and build the Docker-based Spark cluster with:
+  - linux
+    ```
+    chmod +x build-images.sh
+    ./build-images.sh
+    ```
+    -windows
+    ```
+    set -e
+    docker build -t spark-base:latest ./docker/base
+    docker build -t spark-master:latest ./docker/spark-master
+    docker build -t spark-worker:latest ./docker/spark-worker
+    docker build -t spark-submit:latest ./docker/spark-submit
+    ```
+
 - when prompted to start the Spark cluster, go to the `spark-cluster` folder and run `docker-compose up --scale spark-worker=3` to spin up the Spark containers
 
 
